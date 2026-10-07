@@ -33,6 +33,8 @@ RUN_RIGHT_ROW = 1
 RUN_LEFT_ROW = 0
 DRAW_SIZE = 160
 MOVE_SPEED = 240.0
+FRAME_COUNT = 8
+FRAME_INTERVAL = 0.1
 DIRECTION_KEYS = frozenset((SDLK_LEFT, SDLK_RIGHT, SDLK_UP, SDLK_DOWN))
 
 
@@ -42,6 +44,8 @@ class GameState:
     y: float = CANVAS_HEIGHT / 2
     facing: str = 'right'
     animation_row: int = IDLE_RIGHT_ROW
+    frame_index: int = 0
+    frame_elapsed: float = 0.0
     running: bool = True
     pressed_keys: set[int] = field(default_factory=set)
 
@@ -91,9 +95,13 @@ def main():
                     state.animation_row = RUN_RIGHT_ROW if state.facing == 'right' else RUN_LEFT_ROW
                 else:
                     state.animation_row = IDLE_RIGHT_ROW if state.facing == 'right' else IDLE_LEFT_ROW
+                state.frame_elapsed += dt
+                while state.frame_elapsed >= FRAME_INTERVAL:
+                    state.frame_elapsed -= FRAME_INTERVAL
+                    state.frame_index = (state.frame_index + 1) % FRAME_COUNT
                 clear_canvas()
                 background.draw(CANVAS_WIDTH // 2, CANVAS_HEIGHT // 2)
-                character.clip_draw(SHEET_PADDING, SHEET_PADDING + state.animation_row * CELL_SIZE, CELL_SIZE, CELL_SIZE, state.x, state.y, DRAW_SIZE, DRAW_SIZE)
+                character.clip_draw(SHEET_PADDING + state.frame_index * CELL_SIZE, SHEET_PADDING + state.animation_row * CELL_SIZE, CELL_SIZE, CELL_SIZE, state.x, state.y, DRAW_SIZE, DRAW_SIZE)
                 update_canvas()
                 delay(1 / 60)
         finally:
