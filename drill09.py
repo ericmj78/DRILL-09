@@ -92,12 +92,14 @@ def main():
                 elif horizontal < 0:
                     state.facing = 'left'
                 direction_length = hypot(horizontal, vertical)
+                previous_x, previous_y = state.x, state.y
                 if direction_length:
                     state.x += horizontal / direction_length * MOVE_SPEED * dt
                     state.y += vertical / direction_length * MOVE_SPEED * dt
                 state.x = max(MIN_X, min(MAX_X, state.x))
                 state.y = max(MIN_Y, min(MAX_Y, state.y))
-                if direction_length:
+                moved = state.x != previous_x or state.y != previous_y
+                if moved:
                     next_row = RUN_RIGHT_ROW if state.facing == 'right' else RUN_LEFT_ROW
                 else:
                     next_row = IDLE_RIGHT_ROW if state.facing == 'right' else IDLE_LEFT_ROW
