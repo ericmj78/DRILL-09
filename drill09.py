@@ -17,6 +17,9 @@ from pico2d import (
 
 CANVAS_WIDTH = 1280
 CANVAS_HEIGHT = 1024
+CELL_SIZE = 100
+SHEET_PADDING = 1
+IDLE_RIGHT_ROW = 3
 
 
 def main():
@@ -38,7 +41,7 @@ def main():
                     break
                 clear_canvas()
                 background.draw(CANVAS_WIDTH // 2, CANVAS_HEIGHT // 2)
-                character.clip_draw(1, 301, 100, 100, CANVAS_WIDTH // 2, CANVAS_HEIGHT // 2)
+                character.clip_draw(SHEET_PADDING, SHEET_PADDING + IDLE_RIGHT_ROW * CELL_SIZE, CELL_SIZE, CELL_SIZE, CANVAS_WIDTH // 2, CANVAS_HEIGHT // 2)
                 update_canvas()
                 delay(1 / 60)
         finally:
