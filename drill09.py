@@ -28,6 +28,9 @@ CANVAS_HEIGHT = 1024
 CELL_SIZE = 100
 SHEET_PADDING = 1
 IDLE_RIGHT_ROW = 3
+IDLE_LEFT_ROW = 2
+RUN_RIGHT_ROW = 1
+RUN_LEFT_ROW = 0
 DRAW_SIZE = 160
 MOVE_SPEED = 240.0
 DIRECTION_KEYS = frozenset((SDLK_LEFT, SDLK_RIGHT, SDLK_UP, SDLK_DOWN))
@@ -38,6 +41,7 @@ class GameState:
     x: float = CANVAS_WIDTH / 2
     y: float = CANVAS_HEIGHT / 2
     facing: str = 'right'
+    animation_row: int = IDLE_RIGHT_ROW
     running: bool = True
     pressed_keys: set[int] = field(default_factory=set)
 
