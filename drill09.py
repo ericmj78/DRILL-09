@@ -75,6 +75,10 @@ def main():
                 dt = max(0.0, now - last_time)
                 last_time = now
                 horizontal, vertical = input_axes(state.pressed_keys)
+                if horizontal > 0:
+                    state.facing = 'right'
+                elif horizontal < 0:
+                    state.facing = 'left'
                 direction_length = hypot(horizontal, vertical)
                 if direction_length:
                     state.x += horizontal / direction_length * MOVE_SPEED * dt
