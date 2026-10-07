@@ -1,12 +1,17 @@
 """DRILL #9: 방향키로 소년을 움직이는 pico2d 프로그램."""
 
 import os
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from pico2d import (
     SDL_KEYDOWN,
+    SDL_KEYUP,
     SDL_QUIT,
     SDLK_ESCAPE,
+    SDLK_LEFT,
+    SDLK_RIGHT,
+    SDLK_UP,
+    SDLK_DOWN,
     clear_canvas,
     close_canvas,
     delay,
@@ -22,6 +27,7 @@ CELL_SIZE = 100
 SHEET_PADDING = 1
 IDLE_RIGHT_ROW = 3
 DRAW_SIZE = 160
+DIRECTION_KEYS = frozenset((SDLK_LEFT, SDLK_RIGHT, SDLK_UP, SDLK_DOWN))
 
 
 @dataclass
@@ -30,6 +36,7 @@ class GameState:
     y: float = CANVAS_HEIGHT / 2
     facing: str = 'right'
     running: bool = True
+    pressed_keys: set[int] = field(default_factory=set)
 
 
 def main():
@@ -43,10 +50,15 @@ def main():
             state = GameState()
             while state.running:
                 for event in get_events():
-                    if event.type == SDL_QUIT or (
-                        event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE
-                    ):
+                    if event.type == SDL_QUIT:
                         state.running = False
+                    elif event.type == SDL_KEYDOWN:
+                        if event.key == SDLK_ESCAPE:
+                            state.running = False
+                        elif event.key in DIRECTION_KEYS:
+                            state.pressed_keys.add(event.key)
+                    elif event.type == SDL_KEYUP:
+                        state.pressed_keys.discard(event.key)
                 if not state.running:
                     break
                 clear_canvas()
