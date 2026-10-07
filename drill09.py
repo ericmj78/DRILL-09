@@ -87,9 +87,13 @@ def main():
                 if direction_length:
                     state.x += horizontal / direction_length * MOVE_SPEED * dt
                     state.y += vertical / direction_length * MOVE_SPEED * dt
+                if direction_length:
+                    state.animation_row = RUN_RIGHT_ROW if state.facing == 'right' else RUN_LEFT_ROW
+                else:
+                    state.animation_row = IDLE_RIGHT_ROW if state.facing == 'right' else IDLE_LEFT_ROW
                 clear_canvas()
                 background.draw(CANVAS_WIDTH // 2, CANVAS_HEIGHT // 2)
-                character.clip_draw(SHEET_PADDING, SHEET_PADDING + IDLE_RIGHT_ROW * CELL_SIZE, CELL_SIZE, CELL_SIZE, state.x, state.y, DRAW_SIZE, DRAW_SIZE)
+                character.clip_draw(SHEET_PADDING, SHEET_PADDING + state.animation_row * CELL_SIZE, CELL_SIZE, CELL_SIZE, state.x, state.y, DRAW_SIZE, DRAW_SIZE)
                 update_canvas()
                 delay(1 / 60)
         finally:
