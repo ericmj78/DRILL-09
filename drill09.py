@@ -1,6 +1,7 @@
 """DRILL #9: 방향키로 소년을 움직이는 pico2d 프로그램."""
 
 import os
+from dataclasses import dataclass
 
 from pico2d import (
     SDL_KEYDOWN,
@@ -23,6 +24,14 @@ IDLE_RIGHT_ROW = 3
 DRAW_SIZE = 160
 
 
+@dataclass
+class GameState:
+    x: float = CANVAS_WIDTH / 2
+    y: float = CANVAS_HEIGHT / 2
+    facing: str = 'right'
+    running: bool = True
+
+
 def main():
     previous_directory = os.getcwd()
     os.chdir(os.path.dirname(__file__) or '.')
@@ -31,18 +40,18 @@ def main():
         try:
             background = load_image('TUK_GROUND.png')
             character = load_image('animation_sheet.png')
-            running = True
-            while running:
+            state = GameState()
+            while state.running:
                 for event in get_events():
                     if event.type == SDL_QUIT or (
                         event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE
                     ):
-                        running = False
-                if not running:
+                        state.running = False
+                if not state.running:
                     break
                 clear_canvas()
                 background.draw(CANVAS_WIDTH // 2, CANVAS_HEIGHT // 2)
-                character.clip_draw(SHEET_PADDING, SHEET_PADDING + IDLE_RIGHT_ROW * CELL_SIZE, CELL_SIZE, CELL_SIZE, CANVAS_WIDTH // 2, CANVAS_HEIGHT // 2, DRAW_SIZE, DRAW_SIZE)
+                character.clip_draw(SHEET_PADDING, SHEET_PADDING + IDLE_RIGHT_ROW * CELL_SIZE, CELL_SIZE, CELL_SIZE, state.x, state.y, DRAW_SIZE, DRAW_SIZE)
                 update_canvas()
                 delay(1 / 60)
         finally:
