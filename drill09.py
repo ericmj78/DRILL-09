@@ -41,6 +41,12 @@ class GameState:
     pressed_keys: set[int] = field(default_factory=set)
 
 
+def input_axes(pressed_keys):
+    horizontal = int(SDLK_RIGHT in pressed_keys) - int(SDLK_LEFT in pressed_keys)
+    vertical = int(SDLK_UP in pressed_keys) - int(SDLK_DOWN in pressed_keys)
+    return horizontal, vertical
+
+
 def main():
     previous_directory = os.getcwd()
     os.chdir(os.path.dirname(__file__) or '.')
@@ -67,14 +73,9 @@ def main():
                 now = get_time()
                 dt = max(0.0, now - last_time)
                 last_time = now
-                if SDLK_RIGHT in state.pressed_keys:
-                    state.x += MOVE_SPEED * dt
-                if SDLK_LEFT in state.pressed_keys:
-                    state.x -= MOVE_SPEED * dt
-                if SDLK_UP in state.pressed_keys:
-                    state.y += MOVE_SPEED * dt
-                if SDLK_DOWN in state.pressed_keys:
-                    state.y -= MOVE_SPEED * dt
+                horizontal, vertical = input_axes(state.pressed_keys)
+                state.x += horizontal * MOVE_SPEED * dt
+                state.y += vertical * MOVE_SPEED * dt
                 clear_canvas()
                 background.draw(CANVAS_WIDTH // 2, CANVAS_HEIGHT // 2)
                 character.clip_draw(SHEET_PADDING, SHEET_PADDING + IDLE_RIGHT_ROW * CELL_SIZE, CELL_SIZE, CELL_SIZE, state.x, state.y, DRAW_SIZE, DRAW_SIZE)
