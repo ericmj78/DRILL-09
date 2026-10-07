@@ -73,6 +73,51 @@ def handle_events(state):
             state.pressed_keys.discard(event.key)
 
 
+def update(state, dt):
+    horizontal, vertical = input_axes(state.pressed_keys)
+    if horizontal > 0:
+        state.facing = 'right'
+    elif horizontal < 0:
+        state.facing = 'left'
+    direction_length = hypot(horizontal, vertical)
+    previous_x, previous_y = state.x, state.y
+    if direction_length:
+        state.x += horizontal / direction_length * MOVE_SPEED * dt
+        state.y += vertical / direction_length * MOVE_SPEED * dt
+    state.x = max(MIN_X, min(MAX_X, state.x))
+    state.y = max(MIN_Y, min(MAX_Y, state.y))
+    moved = state.x != previous_x or state.y != previous_y
+    if moved:
+        next_row = RUN_RIGHT_ROW if state.facing == 'right' else RUN_LEFT_ROW
+    else:
+        next_row = IDLE_RIGHT_ROW if state.facing == 'right' else IDLE_LEFT_ROW
+    if next_row != state.animation_row:
+        state.animation_row = next_row
+        state.frame_index = 0
+        state.frame_elapsed = 0.0
+    else:
+        state.frame_elapsed += dt
+        while state.frame_elapsed >= FRAME_INTERVAL:
+            state.frame_elapsed -= FRAME_INTERVAL
+            state.frame_index = (state.frame_index + 1) % FRAME_COUNT
+
+
+def draw(background, character, state):
+    clear_canvas()
+    background.draw(CANVAS_WIDTH // 2, CANVAS_HEIGHT // 2)
+    character.clip_draw(
+        SHEET_PADDING + state.frame_index * CELL_SIZE,
+        SHEET_PADDING + state.animation_row * CELL_SIZE,
+        CELL_SIZE,
+        CELL_SIZE,
+        state.x,
+        state.y,
+        DRAW_SIZE,
+        DRAW_SIZE,
+    )
+    update_canvas()
+
+
 def main():
     previous_directory = os.getcwd()
     os.chdir(os.path.dirname(__file__) or '.')
@@ -90,36 +135,8 @@ def main():
                 now = get_time()
                 dt = max(0.0, now - last_time)
                 last_time = now
-                horizontal, vertical = input_axes(state.pressed_keys)
-                if horizontal > 0:
-                    state.facing = 'right'
-                elif horizontal < 0:
-                    state.facing = 'left'
-                direction_length = hypot(horizontal, vertical)
-                previous_x, previous_y = state.x, state.y
-                if direction_length:
-                    state.x += horizontal / direction_length * MOVE_SPEED * dt
-                    state.y += vertical / direction_length * MOVE_SPEED * dt
-                state.x = max(MIN_X, min(MAX_X, state.x))
-                state.y = max(MIN_Y, min(MAX_Y, state.y))
-                moved = state.x != previous_x or state.y != previous_y
-                if moved:
-                    next_row = RUN_RIGHT_ROW if state.facing == 'right' else RUN_LEFT_ROW
-                else:
-                    next_row = IDLE_RIGHT_ROW if state.facing == 'right' else IDLE_LEFT_ROW
-                if next_row != state.animation_row:
-                    state.animation_row = next_row
-                    state.frame_index = 0
-                    state.frame_elapsed = 0.0
-                else:
-                    state.frame_elapsed += dt
-                    while state.frame_elapsed >= FRAME_INTERVAL:
-                        state.frame_elapsed -= FRAME_INTERVAL
-                        state.frame_index = (state.frame_index + 1) % FRAME_COUNT
-                clear_canvas()
-                background.draw(CANVAS_WIDTH // 2, CANVAS_HEIGHT // 2)
-                character.clip_draw(SHEET_PADDING + state.frame_index * CELL_SIZE, SHEET_PADDING + state.animation_row * CELL_SIZE, CELL_SIZE, CELL_SIZE, state.x, state.y, DRAW_SIZE, DRAW_SIZE)
-                update_canvas()
+                update(state, dt)
+                draw(background, character, state)
                 delay(1 / 60)
         finally:
             close_canvas()
