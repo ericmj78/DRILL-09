@@ -26,6 +26,7 @@ def main():
         open_canvas(CANVAS_WIDTH, CANVAS_HEIGHT)
         try:
             background = load_image('TUK_GROUND.png')
+            character = load_image('animation_sheet.png')
             running = True
             while running:
                 for event in get_events():
@@ -37,6 +38,7 @@ def main():
                     break
                 clear_canvas()
                 background.draw(CANVAS_WIDTH // 2, CANVAS_HEIGHT // 2)
+                character.clip_draw(1, 301, 100, 100, CANVAS_WIDTH // 2, CANVAS_HEIGHT // 2)
                 update_canvas()
                 delay(1 / 60)
         finally:
