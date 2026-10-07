@@ -10,6 +10,7 @@ from pico2d import (
     close_canvas,
     delay,
     get_events,
+    load_image,
     open_canvas,
     update_canvas,
 )
@@ -24,6 +25,7 @@ def main():
     try:
         open_canvas(CANVAS_WIDTH, CANVAS_HEIGHT)
         try:
+            background = load_image('TUK_GROUND.png')
             running = True
             while running:
                 for event in get_events():
@@ -34,6 +36,7 @@ def main():
                 if not running:
                     break
                 clear_canvas()
+                background.draw(CANVAS_WIDTH // 2, CANVAS_HEIGHT // 2)
                 update_canvas()
                 delay(1 / 60)
         finally:
