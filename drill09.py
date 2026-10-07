@@ -23,21 +23,21 @@ from pico2d import (
     update_canvas,
 )
 
-CANVAS_WIDTH = 1280
-CANVAS_HEIGHT = 1024
+CANVAS_WIDTH = 960
+CANVAS_HEIGHT = 768
 CELL_SIZE = 100
 SHEET_PADDING = 1
 IDLE_RIGHT_ROW = 3
 IDLE_LEFT_ROW = 2
 RUN_RIGHT_ROW = 1
 RUN_LEFT_ROW = 0
-DRAW_SIZE = 160
-MOVE_SPEED = 240.0
+DRAW_SIZE = 120
+MOVE_SPEED = 180.0
 FRAME_COUNT = 8
 FRAME_INTERVAL = 0.1
-MIN_X = 54
+MIN_X = 41
 MAX_X = CANVAS_WIDTH - MIN_X
-MIN_Y = 68
+MIN_Y = 51
 MAX_Y = CANVAS_HEIGHT - MIN_Y
 DIRECTION_KEYS = frozenset((SDLK_LEFT, SDLK_RIGHT, SDLK_UP, SDLK_DOWN))
 
@@ -104,7 +104,7 @@ def update(state, dt):
 
 def draw(background, character, state):
     clear_canvas()
-    background.draw(CANVAS_WIDTH // 2, CANVAS_HEIGHT // 2)
+    background.draw(CANVAS_WIDTH // 2, CANVAS_HEIGHT // 2, CANVAS_WIDTH, CANVAS_HEIGHT)
     character.clip_draw(
         SHEET_PADDING + state.frame_index * CELL_SIZE,
         SHEET_PADDING + state.animation_row * CELL_SIZE,
