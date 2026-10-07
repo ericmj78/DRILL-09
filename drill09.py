@@ -16,6 +16,7 @@ from pico2d import (
     close_canvas,
     delay,
     get_events,
+    get_time,
     load_image,
     open_canvas,
     update_canvas,
@@ -27,6 +28,7 @@ CELL_SIZE = 100
 SHEET_PADDING = 1
 IDLE_RIGHT_ROW = 3
 DRAW_SIZE = 160
+MOVE_SPEED = 240.0
 DIRECTION_KEYS = frozenset((SDLK_LEFT, SDLK_RIGHT, SDLK_UP, SDLK_DOWN))
 
 
@@ -48,6 +50,7 @@ def main():
             background = load_image('TUK_GROUND.png')
             character = load_image('animation_sheet.png')
             state = GameState()
+            last_time = get_time()
             while state.running:
                 for event in get_events():
                     if event.type == SDL_QUIT:
@@ -61,6 +64,11 @@ def main():
                         state.pressed_keys.discard(event.key)
                 if not state.running:
                     break
+                now = get_time()
+                dt = max(0.0, now - last_time)
+                last_time = now
+                if SDLK_RIGHT in state.pressed_keys:
+                    state.x += MOVE_SPEED * dt
                 clear_canvas()
                 background.draw(CANVAS_WIDTH // 2, CANVAS_HEIGHT // 2)
                 character.clip_draw(SHEET_PADDING, SHEET_PADDING + IDLE_RIGHT_ROW * CELL_SIZE, CELL_SIZE, CELL_SIZE, state.x, state.y, DRAW_SIZE, DRAW_SIZE)
