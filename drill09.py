@@ -37,6 +37,8 @@ FRAME_COUNT = 8
 FRAME_INTERVAL = 0.1
 MIN_X = 54
 MAX_X = CANVAS_WIDTH - MIN_X
+MIN_Y = 68
+MAX_Y = CANVAS_HEIGHT - MIN_Y
 DIRECTION_KEYS = frozenset((SDLK_LEFT, SDLK_RIGHT, SDLK_UP, SDLK_DOWN))
 
 
@@ -94,6 +96,7 @@ def main():
                     state.x += horizontal / direction_length * MOVE_SPEED * dt
                     state.y += vertical / direction_length * MOVE_SPEED * dt
                 state.x = max(MIN_X, min(MAX_X, state.x))
+                state.y = max(MIN_Y, min(MAX_Y, state.y))
                 if direction_length:
                     next_row = RUN_RIGHT_ROW if state.facing == 'right' else RUN_LEFT_ROW
                 else:
