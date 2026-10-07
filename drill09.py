@@ -71,6 +71,8 @@ def main():
                     state.x += MOVE_SPEED * dt
                 if SDLK_LEFT in state.pressed_keys:
                     state.x -= MOVE_SPEED * dt
+                if SDLK_UP in state.pressed_keys:
+                    state.y += MOVE_SPEED * dt
                 clear_canvas()
                 background.draw(CANVAS_WIDTH // 2, CANVAS_HEIGHT // 2)
                 character.clip_draw(SHEET_PADDING, SHEET_PADDING + IDLE_RIGHT_ROW * CELL_SIZE, CELL_SIZE, CELL_SIZE, state.x, state.y, DRAW_SIZE, DRAW_SIZE)
