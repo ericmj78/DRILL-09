@@ -60,6 +60,19 @@ def input_axes(pressed_keys):
     return horizontal, vertical
 
 
+def handle_events(state):
+    for event in get_events():
+        if event.type == SDL_QUIT:
+            state.running = False
+        elif event.type == SDL_KEYDOWN:
+            if event.key == SDLK_ESCAPE:
+                state.running = False
+            elif event.key in DIRECTION_KEYS:
+                state.pressed_keys.add(event.key)
+        elif event.type == SDL_KEYUP:
+            state.pressed_keys.discard(event.key)
+
+
 def main():
     previous_directory = os.getcwd()
     os.chdir(os.path.dirname(__file__) or '.')
@@ -71,16 +84,7 @@ def main():
             state = GameState()
             last_time = get_time()
             while state.running:
-                for event in get_events():
-                    if event.type == SDL_QUIT:
-                        state.running = False
-                    elif event.type == SDL_KEYDOWN:
-                        if event.key == SDLK_ESCAPE:
-                            state.running = False
-                        elif event.key in DIRECTION_KEYS:
-                            state.pressed_keys.add(event.key)
-                    elif event.type == SDL_KEYUP:
-                        state.pressed_keys.discard(event.key)
+                handle_events(state)
                 if not state.running:
                     break
                 now = get_time()
