@@ -20,6 +20,7 @@ CANVAS_HEIGHT = 1024
 CELL_SIZE = 100
 SHEET_PADDING = 1
 IDLE_RIGHT_ROW = 3
+DRAW_SIZE = 160
 
 
 def main():
@@ -41,7 +42,7 @@ def main():
                     break
                 clear_canvas()
                 background.draw(CANVAS_WIDTH // 2, CANVAS_HEIGHT // 2)
-                character.clip_draw(SHEET_PADDING, SHEET_PADDING + IDLE_RIGHT_ROW * CELL_SIZE, CELL_SIZE, CELL_SIZE, CANVAS_WIDTH // 2, CANVAS_HEIGHT // 2)
+                character.clip_draw(SHEET_PADDING, SHEET_PADDING + IDLE_RIGHT_ROW * CELL_SIZE, CELL_SIZE, CELL_SIZE, CANVAS_WIDTH // 2, CANVAS_HEIGHT // 2, DRAW_SIZE, DRAW_SIZE)
                 update_canvas()
                 delay(1 / 60)
         finally:
