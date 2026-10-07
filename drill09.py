@@ -2,6 +2,7 @@
 
 import os
 from dataclasses import dataclass, field
+from math import hypot
 
 from pico2d import (
     SDL_KEYDOWN,
@@ -74,8 +75,10 @@ def main():
                 dt = max(0.0, now - last_time)
                 last_time = now
                 horizontal, vertical = input_axes(state.pressed_keys)
-                state.x += horizontal * MOVE_SPEED * dt
-                state.y += vertical * MOVE_SPEED * dt
+                direction_length = hypot(horizontal, vertical)
+                if direction_length:
+                    state.x += horizontal / direction_length * MOVE_SPEED * dt
+                    state.y += vertical / direction_length * MOVE_SPEED * dt
                 clear_canvas()
                 background.draw(CANVAS_WIDTH // 2, CANVAS_HEIGHT // 2)
                 character.clip_draw(SHEET_PADDING, SHEET_PADDING + IDLE_RIGHT_ROW * CELL_SIZE, CELL_SIZE, CELL_SIZE, state.x, state.y, DRAW_SIZE, DRAW_SIZE)
